@@ -9,4 +9,4 @@ $TTL    86400
         IN      NS      servidor.dorayaki.org. 
  
 ; PTRs 
-1   IN  PTR servidor.dorayaki.org.              ; 10.1.0.1 
+252   IN  PTR servidor.dorayaki.org.              ; 10.0.0.252
