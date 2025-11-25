@@ -1,0 +1,15 @@
+
+zone "dorayaki.org" { 
+    type master; 
+    file "/etc/bind/zones/db.dorayaki.org.zone"; 
+}; 
+//DNS inverso 
+zone "0.1.10.in-addr.arpa" { 
+type master; 
+file "/etc/bind/zones/db.10.1.0"; 
+}; 
+ 
+zone "1.1.10.in-addr.arpa" { 
+    type master; 
+    file "/etc/bind/zones/db.10.1.1"; 
+}; 

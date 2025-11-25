@@ -1,0 +1,25 @@
+$ORIGIN dorayaki.org. 
+$TTL 86400 
+ 
+@   IN  SOA servidor.dorayaki.org. root.dorayaki.org. ( 
+        2		; Serial 
+        3600		; Refresh 
+        1800		; Retry 
+        1209600		; Expire 
+        3600 )		; Minimum TTL 
+ 
+IN  NS  servidor.dorayaki.org. 
+ 
+ 
+;Direcciones de los dns 
+servidor	IN  A	10.1.0.1	; servidor dns 
+; Entradas para servicios de la práctica 
+@		IN  A   10.0.0.252       ; servidor del domino dorayaki.org 
+www		IN  A   10.0.0.252	; servidor web 
+web		IN  A   10.0.0.252
+smtp		IN  A   10.0.0.252	; servidor SMTP 
+pop		IN  A   10.0.0.252	; servidor POP3 
+imap		IN  A	10.0.0.252
+
+; Registro MX (correo) 
+@		IN MX 10 smtp.dorayaki.org. 
