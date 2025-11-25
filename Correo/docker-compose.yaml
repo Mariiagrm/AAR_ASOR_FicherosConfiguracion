@@ -11,9 +11,9 @@ services:
 
     volumes:
       - ./maildata:/home/user/Maildir       # buzones (persistencia)
-      - ./postfix:/etc/postfix              # configuracion postfix (editar main.cf aquí)
+      - ./postfix:/etc/postfix              # configuracion postfix 
       - ./dovecot:/etc/dovecot               # configuracion dovecot
-      - ./logs:/var/log                      # logs (opcional, revisar permisos)
+      - ./logs:/var/log                      # logs 
     environment:
       - TZ=Europe/Madrid
 
