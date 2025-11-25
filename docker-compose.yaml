@@ -1,0 +1,28 @@
+  version: "3.8"
+  
+  services:
+    dns:
+      build:
+        context: .
+        dockerfile: ./DNS/Dockerfile
+      image: bind-custom
+      container_name: dns-dorayaki
+      restart: unless-stopped
+      network_mode: "host"        # usa la IP del host (DMZ)
+
+      ports:
+      - "10.1.0.1:53:53/udp"
+      - "10.1.0.1:53:53/tcp"
+      volumes:
+        - ./zones:/etc/bind/zones
+
+ 
+  
+  networks:
+    dmz_net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 10.1.0.0/24
+
+  
