@@ -1,0 +1,49 @@
+#Todos los servicios de s1
+version: '3.8'
+services:
+  #----------------SERVIDOR CORREO ELECTRONICO----------------
+    mail:
+      build: 
+        context: .
+        dockerfile: ./Correo/dockerfile
+      container_name: dorayaki-mail
+      restart: unless-stopped
+      #"host" para evitar problemas con NAT/iptables y hace que los puertos queden exactamente en la IP del host.
+      network_mode: "host"
+      ports:
+        - "25:25"        # SMTP
+        - "143:143"      # IMAP
+        - "587:587"      # SMTP con autenticacion
+
+
+      volumes:
+        - ./maildata:/home/user/Maildir       # buzones (persistencia)
+        - ./postfix:/etc/postfix              # configuracion postfix 
+        - ./dovecot:/etc/dovecot               # configuracion dovecot
+        - ./logs:/var/log                      # logs 
+      environment:
+        - TZ=Europe/Madrid
+#----------------SERVIDOR DNS----------------
+
+    dns:
+      build:
+        context: .
+        dockerfile: ./DNS/dockerfile
+      image: bind-custom
+      container_name: dns-dorayaki
+      restart: unless-stopped
+      network_mode: "host"        # usa la IP del host (DMZ)
+
+      ports:
+      - "10.1.0.1:53:53/udp"
+      - "10.1.0.1:53:53/tcp"
+      volumes:
+        - ./zones:/etc/bind/zones
+
+networks:
+    dmz_net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 10.1.0.0/24
+

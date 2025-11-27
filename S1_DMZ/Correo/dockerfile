@@ -18,10 +18,10 @@ RUN apt-get update && \
 RUN useradd -m -s /bin/bash alumno && echo "alumno:alumno" | chpasswd
 
 # 3. Copiar configuraciones mínimas
-COPY postfix/main.cf /etc/postfix/main.cf
-COPY dovecot/dovecot.conf /etc/dovecot/dovecot.conf
-COPY dovecot/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
-COPY dovecot/10-auth.conf /etc/dovecot/conf.d/10-auth.conf
+COPY Correo/postfix/main.cf /etc/postfix/main.cf
+COPY Correo/dovecot/dovecot.conf /etc/dovecot/dovecot.conf
+COPY Correo/dovecot/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+COPY Correo/dovecot/10-auth.conf /etc/dovecot/conf.d/10-auth.conf
 
 # 4. Exponer puertos: SMTP, POP3, IMAP
 EXPOSE 25 110 143

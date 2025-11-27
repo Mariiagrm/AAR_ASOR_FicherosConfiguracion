@@ -10,13 +10,13 @@ RUN mkdir -p /etc/bind/zones
 
 # Copiar configuaciones personalizadas  
 
-COPY named.conf /etc/bind/named.conf  
+COPY DNS/named.conf /etc/bind/named.conf  
 
-COPY named.conf.options /etc/bind/named.conf.options  
+COPY DNS/named.conf.options /etc/bind/named.conf.options  
 
-COPY named.conf.local /etc/bind/named.conf.local  
+COPY DNS/named.conf.local /etc/bind/named.conf.local  
 
-COPY zones/ /etc/bind/zones/  
+COPY DNS/zones/ /etc/bind/zones/  
 
 # Exponer los puertos del servicio DNS  
 
