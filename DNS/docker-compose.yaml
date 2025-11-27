@@ -4,7 +4,7 @@
     dns:
       build:
         context: .
-        dockerfile: ./DNS/Dockerfile
+        dockerfile: ./Dockerfile
       image: bind-custom
       container_name: dns-dorayaki
       restart: unless-stopped
