@@ -12,7 +12,7 @@ $TTL 86400
  
  
 ;Direcciones de los dns 
-servidor	IN  A	10.1.0.1	; servidor dns 
+servidor	IN  A	10.0.0.252	; servidor dns 
 ; Entradas para servicios de la práctica 
 @		IN  A   10.0.0.252       ; servidor del domino dorayaki.org 
 www		IN  A   10.0.0.252	; servidor web 

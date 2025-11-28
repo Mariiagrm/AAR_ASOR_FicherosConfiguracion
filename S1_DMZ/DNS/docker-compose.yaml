@@ -11,7 +11,8 @@
       #network_mode: "host"        # usa la IP del host (DMZ)
 
       ports:
-      - "53:53"
+      - "53:53/tcp"
+      - "53:53/udp"
 
       volumes:
         - ./zones:/etc/bind/zones
