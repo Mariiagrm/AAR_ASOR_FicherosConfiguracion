@@ -1,0 +1,13 @@
+name: FTP-Service
+services:
+    proftpd:
+        build: ./
+        ports:
+            - 21:21
+            - 50000-50100:50000-50100
+        volumes:
+            - /home/alumno/servicios/FTP/FTP-HOME:/home/ftpuser
+        environment:
+            - FTP_LIST=alumno:alumno
+        container_name: ftp-server
+        image: kibatic/proftpd:latest

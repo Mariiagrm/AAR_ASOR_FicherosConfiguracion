@@ -11,18 +11,19 @@ $TTL 86400
     IN  NS  servidor.dorayaki.org.
 
 ; Servidor DNS visto desde dentro (puede ser la misma IP u otra)
-servidor    IN  A   10.1.0.2       ; o la IP que tenga realmente el DNS
+servidor    IN  A   10.1.0.1       ; o la IP que tenga realmente el DNS
 
 ; Servicios visibles para internos (normalmente iguales a los externos)
-@           IN  A   10.0.0.252
-www         IN  A   10.0.0.252
-web         IN  A   10.0.0.252
-smtp        IN  A   10.0.0.252
-pop         IN  A   10.0.0.252
-imap        IN  A   10.0.0.252
-
-; MX interno (igual que fuera)
-@           IN  MX  10 smtp.dorayaki.org.
+@           IN  A   10.1.0.1
+www         IN  A   10.1.0.1
+web         IN  A   10.1.0.1
+smtp        IN  A   10.1.0.1
+pop         IN  A   10.1.0.1
+imap        IN  A   10.1.0.1
 
 ; >>> Split-horizon: solo la red interna ve este registro <<<
 ftp         IN  A   10.1.1.2       ; servidor FTP en la red privada
+
+
+; MX interno (igual que fuera)
+@           IN  MX  10 smtp.dorayaki.org.
