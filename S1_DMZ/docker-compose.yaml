@@ -25,20 +25,27 @@ services:
         - TZ=Europe/Madrid
 #----------------SERVIDOR DNS----------------
 
+
     dns:
       build:
         context: .
-        dockerfile: ./DNS/dockerfile
+        dockerfile: ./DNS/Dockerfile
       image: bind-custom
       container_name: dns-dorayaki
       restart: unless-stopped
-      network_mode: "host"        # usa la IP del host (DMZ)
-
-      ports:
-      - "10.1.0.1:53:53/udp"
-      - "10.1.0.1:53:53/tcp"
+      #network_mode: "host" #Usa la red del host para evitar problemas con puertos
+  
+      # No host port binding to avoid conflict on port 53
+      # ports:
+      #   - "53:53/tcp"
+      #   - "53:53/udp"
+  
       volumes:
         - ./zones:/etc/bind/zones
+  
+      networks:
+        dmz_net:
+          ipv4_address: 10.1.0.1
 
 networks:
     dmz_net:
@@ -46,4 +53,5 @@ networks:
       ipam:
         config:
           - subnet: 10.1.0.0/24
+            gateway: 10.1.0.254
 
