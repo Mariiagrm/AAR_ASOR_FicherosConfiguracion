@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dorayakiweb
+  namespace: dorayakiweb
+  labels:
+    app: dorayakiweb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dorayakiweb
+  template:
+    metadata:
+      labels:
+        app: dorayakiweb
+    spec:
+      containers:
+        - name: nginx
+          image: dorayakiweb-service:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dorayakiweb-svc
+  namespace: dorayakiweb
+spec:
+  type: ClusterIP
+  selector:
+    app: dorayakiweb
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443

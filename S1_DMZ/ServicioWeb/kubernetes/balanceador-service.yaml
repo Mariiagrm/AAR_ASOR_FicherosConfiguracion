@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dorayakiweb-ingress-controller
+  namespace: dorayakiweb
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /   # opcional
+spec:
+  tls:
+    - hosts:
+        - dorayaki.local
+      secretName: dorayakiweb-tls    # el secret TLS que has creado
+  rules:
+    - host: dorayaki.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dorayakiweb-svc
+                port:
+                  number: 80

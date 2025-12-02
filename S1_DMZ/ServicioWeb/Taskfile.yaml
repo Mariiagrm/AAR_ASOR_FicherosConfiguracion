@@ -1,0 +1,46 @@
+version: '3'
+tasks:
+  clean-namespace:
+    desc: Elimina el namespace y todos los recursos asociados
+    dir: ./kubernetes
+    cmds:
+      - kubectl delete namespace dorayakiweb
+
+  setup-namespace:
+    desc: Crea el namespace de la práctica
+    dir: ./kubernetes
+    cmds:
+      - kubectl apply -f namespace.yaml
+
+  build-dorayakiweb:
+    desc: Construye y carga la imagen de dorayakiweb-service en Minikube
+    cmds:
+      - minikube image build -t dorayakiweb-service:latest ./dorayakiweb-service
+  build-balanceador:
+    desc: Construye y carga la imagen del balanceador en Minikube
+    cmds:
+      - minikube image build -t dorayakiweb-ingress-controller:latest ./balanceador-service
+   
+  build-todo:
+    desc: Construye y carga todas las imágenes necesarias
+    deps:
+      - build-dorayakiweb
+      - build-balanceador
+
+  deploy-dorayakiweb:
+    desc: Aplica los recursos del dorayakiweb-service
+    dir: ./kubernetes
+    cmds:
+      - kubectl apply -f dorayakiweb-deployment.yaml -n dorayakiweb
+
+  deploy-balanceador:
+    desc: Aplica el Ingress del dorayakiweb-service
+    dir: ./kubernetes
+    cmds:
+      - kubectl apply -f balanceador-service.yaml -n dorayakiweb
+  deploy-todo:
+    desc: Aplica todos los recursos
+    cmds:
+      - task: setup-namespace
+      - task: build-todo
+      - task: deploy-dorayakiweb
