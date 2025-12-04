@@ -1,0 +1,7 @@
+options { 
+    directory "/var/cache/bind"; 
+    recursion yes; 
+    forwarders { 8.8.8.8; 8.8.4.4; };
+    allow-query { any; }; 
+    dnssec-validation auto; 
+}; 

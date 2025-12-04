@@ -1,0 +1,20 @@
+FROM debian:stable-slim  
+
+# Instalar Bind9  
+RUN apt-get update && apt-get install -y bind9 bind9utils bind9-doc && apt-get clean  
+
+# Crear directorio para la configuración  
+RUN mkdir -p /etc/bind/zones  
+
+# Copiar configuaciones personalizadas  
+COPY named.conf /etc/bind/named.conf  
+COPY named.conf.options /etc/bind/named.conf.options  
+COPY named.conf.local /etc/bind/named.conf.local  
+COPY zones/ /etc/bind/zones/  
+
+# Exponer los puertos del servicio DNS  
+EXPOSE 53/udp  
+EXPOSE 53/tcp  
+
+# Ejecutar Bind en primer plano  
+CMD ["named", "-f", "-g"] 

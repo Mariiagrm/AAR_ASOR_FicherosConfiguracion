@@ -1,0 +1,19 @@
+ #Imagen base oficial de Nginx  
+FROM nginx:alpine  
+
+RUN rm /etc/nginx/conf.d/default.conf
+# Configuracion de proxy inverso para balanceo de carga
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copiar script para crear certificados TLS
+RUN mkdir -p /etc/nginx/sites-available
+COPY dorayakiweb-tls.crt /etc/nginx/sites-available/dorayakiweb-tls.crt
+COPY dorayakiweb-tls.key /etc/nginx/sites-available/dorayakiweb-tls.key
+
+
+# Exponer el puerto estándar de HTTP  
+EXPOSE 80
+EXPOSE 443
+
+# Comando por defecto (ya viene configurado en la imagen de Nginx)  
+CMD ["nginx", "-g", "daemon off;"] 

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dorayakiweb-proxy-service
+  namespace: dorayakiweb
+  labels:
+    app: dorayakiweb-proxy
+spec:
+  type: NodePort # Exponer el servicio fuera del cluster 
+  selector:
+    app: dorayakiweb-proxy
+  ports:
+    - name: http
+      port: 80        # puerto del servicio dentro del cluster
+      targetPort: 80  # puerto del contenedor (Nginx)
+      nodePort: 30080  # puerto expuesto en los nodos de Minikube
+    - name: https
+      port: 443       # puerto del servicio dentro del cluster
+      targetPort: 443 # puerto del contenedor (Nginx)
+      nodePort: 30443 # puerto expuesto en los nodos de Minikube

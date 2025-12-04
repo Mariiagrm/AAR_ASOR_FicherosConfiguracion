@@ -1,0 +1,16 @@
+ #Imagen base oficial de Nginx  
+FROM nginx:alpine  
+
+# Copiar tu página web al directorio que sirve Nginx
+# Dentro de la capeta 'public' estan los archivos de la página web  
+COPY public/ /usr/share/nginx/html/  
+
+
+
+# Exponer el puerto estándar de HTTP  
+EXPOSE 80  
+# No hace falta Exponer el puerto estándar de HTTPS porque el trafico HHTPS lo manejara el proxy inverso
+#EXPOSE 443
+
+# Comando por defecto (ya viene configurado en la imagen de Nginx)  
+CMD ["nginx", "-g", "daemon off;"] 

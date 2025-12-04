@@ -1,0 +1,11 @@
+//DNS inverso 
+zone "0.0.10.in-addr.arpa" { 
+type master; 
+file "/etc/bind/zones/db.10.0.0"; 
+
+}; 
+ 
+zone "1.1.10.in-addr.arpa" { 
+    type master; 
+    file "/etc/bind/zones/db.10.1.1"; 
+}; 

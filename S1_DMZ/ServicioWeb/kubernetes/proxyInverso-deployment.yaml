@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dorayakiweb-proxy
+  namespace: dorayakiweb
+  labels:
+    app: dorayakiweb
+spec:
+  selector:
+    matchLabels:
+      app: dorayakiweb-proxy
+  template:
+    metadata:
+      labels:
+        app: dorayakiweb-proxy
+    spec:
+      containers:
+        - name: dorayakiweb-proxy
+          image: dorayakiweb-proxy-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+

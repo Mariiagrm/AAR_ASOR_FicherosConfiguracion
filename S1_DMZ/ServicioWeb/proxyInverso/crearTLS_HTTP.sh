@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Crear o recrear el certificado TLS y el secreto en Kubernetes
 
 NAMESPACE="dorayakiweb"
