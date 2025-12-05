@@ -4,8 +4,8 @@ services:
   #----------------SERVIDOR CORREO ELECTRONICO----------------
     mail:
       build: 
-        context: .
-        dockerfile: ./Correo/dockerfile
+        context: ./Correo
+        dockerfile: dockerfile
       container_name: dorayaki-mail
       restart: unless-stopped
       #"host" para evitar problemas con NAT/iptables y hace que los puertos queden exactamente en la IP del host.
@@ -28,12 +28,12 @@ services:
 
     dns:
       build:
-        context: .
-        dockerfile: ./DNS/dockerfile
+        context: ./DNS
+        dockerfile: dockerfile
       image: bind-custom
       container_name: dns-dorayaki
       restart: unless-stopped
-      #network_mode: "host" #Usa la red del host para evitar problemas con puertos
+      network_mode: "host" #Usa la red del host para evitar problemas con puertos
   
       # No host port binding to avoid conflict on port 53
       # ports:
