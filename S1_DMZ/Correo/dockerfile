@@ -13,9 +13,12 @@ RUN apt-get update && \
       dnsutils && \
     rm -rf /var/lib/apt/lists/*
 
+# Configuracion de dominio de correo
+RUN echo "dorayaki.org" > /etc/mailname
 # 2. Crear usuario de prueba para el correo
 # Usuario: alumno / contraseña: alumno
-RUN useradd -m -s /bin/bash alumno && echo "alumno:alumno" | chpasswd
+RUN useradd -m -s /bin/bash mariaDorayaki && echo "mariaDorayaki:alumno" | chpasswd
+RUN apt-get update && apt-get install -y procps net-tools
 
 # 3. Copiar configuraciones mínimas
 COPY ./postfix/main.cf /etc/postfix/main.cf
@@ -28,7 +31,6 @@ EXPOSE 25 110 143
 
 # 5. Script de arranque: postfix + dovecot (sin rsyslog)
 CMD ["/bin/sh", "-c", "\
-  postfix start && \
-  dovecot && \
-  tail -F /var/log/mail.log 2>/dev/null || tail -F /dev/null \
+  postfix start; \
+  dovecot -F; \
 "]
