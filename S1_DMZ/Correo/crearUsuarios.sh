@@ -11,3 +11,5 @@ fi
 docker="dorayaki-mail"
 
 docker exec -i "$docker" sh -c "echo \"$nombre@dorayaki.org:{PLAIN}$contrasena\" >> /etc/dovecot/passwd"
+#Crear carpeta maildir
+docker exec -i "$docker" sh -c "maildirmake.dovecot /var/mail/vhosts/dorayaki.org/$nombre/Maildir"	
