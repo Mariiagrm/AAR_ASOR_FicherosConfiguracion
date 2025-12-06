@@ -2,35 +2,53 @@ FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 1. Instalar paquetes necesarios (sin rsyslog)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       postfix \
-      dovecot-core \
-      dovecot-pop3d \
       dovecot-imapd \
+      dovecot-pop3d \
+      dovecot-lmtpd \
+      dovecot-core \
       ca-certificates \
-      dnsutils && \
+      rsyslog \
+      supervisor \
+      openssl \
+      vim-tiny && \
     rm -rf /var/lib/apt/lists/*
 
-# Configuracion de dominio de correo
-RUN echo "dorayaki.org" > /etc/mailname
-# 2. Crear usuario de prueba para el correo
-# Usuario: alumno / contraseña: alumno
-RUN useradd -m -s /bin/bash mariaDorayaki && echo "mariaDorayaki:alumno" | chpasswd
-RUN apt-get update && apt-get install -y procps net-tools
+# Usuario/grupo para buzones virtuales
+RUN groupadd -g 5000 vmail && \
+    useradd -g vmail -u 5000 -d /var/mail/vhosts vmail && \
+    mkdir -p /var/mail/vhosts/dorayaki.org && \
+    chown -R vmail:vmail /var/mail/vhosts
 
-# 3. Copiar configuraciones mínimas
-COPY ./postfix/main.cf /etc/postfix/main.cf
-COPY ./dovecot/dovecot.conf /etc/dovecot/dovecot.conf
-COPY ./dovecot/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
-COPY ./dovecot/10-auth.conf /etc/dovecot/conf.d/10-auth.conf
+# Fichero de contraseñas Dovecot (varios usuarios)
 
-# 4. Exponer puertos: SMTP, POP3, IMAP
-EXPOSE 25 110 143
+RUN mkdir -p /etc/dovecot && \
+    touch /etc/dovecot/passwd && \
+    chown root:dovecot /etc/dovecot/passwd && \
+    chmod 640 /etc/dovecot/passwd
 
-# 5. Script de arranque: postfix + dovecot (sin rsyslog)
-CMD ["/bin/sh", "-c", "\
-  postfix start; \
-  dovecot -F; \
-"]
+# Copiar configuracionuraciones
+COPY configuracion/postfix/virtual_mailbox_maps /etc/postfix/virtual_mailbox_maps
+COPY configuracion/postfix/main.cf /etc/postfix/main.cf
+COPY configuracion/postfix/master.cf /etc/postfix/master.cf
+COPY configuracion/dovecot/dovecot.conf /etc/dovecot/dovecot.conf
+COPY configuracion/dovecot/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+COPY configuracion/dovecot/10-auth.conf /etc/dovecot/conf.d/10-auth.conf
+COPY configuracion/dovecot/10-master.conf /etc/dovecot/conf.d/10-master.conf
+COPY configuracion/dovecot/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf
+COPY configuracion/dovecot/auth-passwdfile.conf.ext /etc/dovecot/conf.d/auth-passwdfile.conf.ext
+COPY configuracion/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Logs
+RUN mkdir -p /var/log/supervisor && \
+    touch /var/log/mail.log /var/log/dovecot.log
+
+# Puertos
+EXPOSE 25 587 110 143 993 995
+
+# Volumen para certificados
+VOLUME ["/certs"]
+
+CMD ["/usr/bin/supervisord", "-n"]

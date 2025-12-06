@@ -1,7 +1,7 @@
 #Todos los servicios de s1
 version: '3.8'
 services:
-  #----------------SERVIDOR CORREO ELECTRONICO----------------
+#----------------SERVIDOR CORREO----------------
     mail:
       build: 
         context: ./Correo
@@ -10,20 +10,33 @@ services:
       restart: unless-stopped
       #"host" para evitar problemas con NAT/iptables y hace que los puertos queden exactamente en la IP del host.
       ports:
-        - "25:25"
-        - "143:143"
-        - "587:587"
+        - "25:25"     # SMTP
+        - "587:587"   # Submission (SMTP autenticado con STARTTLS)
+        - "143:143"   # IMAP
+        - "993:993"   # IMAPS
+        - "110:110"   # POP3
+        - "995:995"   # POP3S
 
-
+      # Certificados
       volumes:
-        - ./maildata:/home/user/Maildir       # buzones (persistencia)
-        # - ./postfix:/etc/postfix              # configuracion postfix  porque si no se montan vacios se pierden los archivos de configuracion
-        # - ./dovecot:/etc/dovecot               # configuracion dovecot
+        - ./Correo/certificados:/certs:ro
+      #Persistir el correo en el host
+        - ./Correo/datos-mail:/var/mail/vhosts
+
+      # Variables opcionales (por si en el futuro las usas)
       environment:
         - TZ=Europe/Madrid
+
+      # Para evitar problemas de permisos con Maildir, usar usuario root dentro del contenedor
+      # (Postfix/Dovecot ya bajan privilegios internamente)
+      user: "0:0"
+
+  # Volúmenes (si quieres usar named volumes en lugar de bind mounts)
+  #volumes:
+  #  maildata:
+  #    driver: local
 #----------------SERVIDOR DNS----------------
 
-        - ./Correo/mailname:/etc/mailname
 
     dns:
       build:
@@ -40,7 +53,7 @@ services:
       #    - "53:53/udp"
   
       volumes:
-        - ./zones:/etc/bind/zones
+        - ./DNS/zones:/etc/bind/zones
   
       #networks:
         #dmz_net:

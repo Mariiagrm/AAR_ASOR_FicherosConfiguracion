@@ -9,8 +9,5 @@ if [ -z "$nombre" ] || [ -z "$contrasena" ]; then
 fi
 
 docker="dorayaki-mail"
-docker exec -it "$docker" useradd -m -s /bin/bash "$nombre" && \
-docker exec -it "$docker" bash -c "echo '$nombre:$contrasena' | chpasswd"
-echo "Usuario $nombre creado con éxito en el contenedor $docker."
-echo "----MAILDIR DE USUARIO----"
-docker exec -it "$docker" bash -c "ls /home/$nombre/Maildir"
+
+docker exec -i "$docker" sh -c "echo \"$nombre@dorayaki.org:{PLAIN}$contrasena\" >> /etc/dovecot/passwd"
