@@ -1,13 +1,14 @@
 name: FTP-Service
 services:
     proftpd:
-        build: ./
+        image: kibatic/proftpd:latest
+        container_name: ftp-server
         ports:
             - 21:21
-            - 50000-50100:50000-50100
+            - 50000-50010:50000-50010
         volumes:
-            - /home/alumno/servicios/FTP/FTP-HOME:/home/ftpuser
+            - /home/alumno/servicios/FTP/FTP-HOME:/home/alumno
         environment:
             - FTP_LIST=alumno:alumno
-        container_name: ftp-server
-        image: kibatic/proftpd:latest
+            - PASSIVE_MIN_PORT=50000 
+            - PASSIVE_MAX_PORT=50010 
