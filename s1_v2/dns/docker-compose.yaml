@@ -1,0 +1,13 @@
+services:
+  bind:
+    image: internetsystemsconsortium/bind9:9.20
+    container_name: bind_dns
+    restart: always
+    network_mode: host
+    volumes:
+      - ./bind:/etc/bind           # Configuración y zonas
+      - bind_cache:/var/cache/bind # Cache de BIND
+
+volumes:
+  bind_cache:
+
