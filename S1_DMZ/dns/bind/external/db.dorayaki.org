@@ -1,0 +1,20 @@
+$TTL 1h
+@   IN SOA servidor.dorayaki.org. admin.dorayaki.org. (
+        20250201 ; serial
+        1h
+        15m
+        30d
+        1h )
+
+    IN NS servidor.dorayaki.org.
+
+servidor    IN A 10.0.0.252
+@           IN A 10.0.0.252
+www         IN A 10.0.0.252
+web         IN A 10.0.0.252
+smtp        IN A 10.0.0.252
+pop         IN A 10.0.0.252
+imap        IN A 10.0.0.252
+mail        IN A 10.0.0.252
+
+@           IN MX 10 mail.dorayaki.org.

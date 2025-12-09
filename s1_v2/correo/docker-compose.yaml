@@ -1,0 +1,19 @@
+services:
+  mailserver:
+    image: docker.io/mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: smtp
+    domainname: dorayaki.org
+    env_file: mailserver.env
+    ports:
+      - "25:25"       # SMTP
+      - "465:465"     # SMTPS
+      - "587:587"     # Submission
+      - "143:143"     # IMAP
+      - "993:993"     # IMAPS
+    volumes:
+      - ./data/mail:/var/mail
+      - ./data/state:/var/mail-state
+      - ./data/log:/var/log/mail
+      - ./config/:/tmp/docker-mailserver/
+    restart: unless-stopped

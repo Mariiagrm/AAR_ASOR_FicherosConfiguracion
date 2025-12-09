@@ -1,69 +1,43 @@
-#Todos los servicios de s1
-version: '3.8'
 services:
-#----------------SERVIDOR CORREO----------------
-    mail:
-      build: 
-        context: ./Correo
-        dockerfile: dockerfile
-      container_name: dorayaki-mail
-      restart: unless-stopped
-      #"host" para evitar problemas con NAT/iptables y hace que los puertos queden exactamente en la IP del host.
-      ports:
-        - "25:25"     # SMTP
-        - "587:587"   # Submission (SMTP autenticado con STARTTLS)
-        - "143:143"   # IMAP
-        - "993:993"   # IMAPS
-        - "110:110"   # POP3
-        - "995:995"   # POP3S
+  # ---------------- SERVIDOR CORREO ----------------
+  mail:
+    build:
+      context: ./Correo
+      dockerfile: dockerfile
+    container_name: dorayaki-mail
+    restart: unless-stopped
 
-      # Certificados
-      volumes:
-        - ./Correo/certificados:/certs:ro
-      #Persistir el correo en el host
-        - ./Correo/datos-mail:/var/mail/vhosts
+    # Puertos expuestos desde el contenedor hacia el host
+    ports:
+      - "25:25"     # SMTP
+      - "587:587"   # Submission (SMTP autenticado con STARTTLS)
+      - "143:143"   # IMAP
+      - "993:993"   # IMAPS
+      - "110:110"   # POP3
+      - "995:995"   # POP3S
 
-      # Variables opcionales (por si en el futuro las usas)
-      environment:
-        - TZ=Europe/Madrid
+    volumes:
+      # Certificados TLS
+      - ./Correo/certificados:/certs:ro
+      # Persistencia del correo (Maildir)
+      - ./Correo/datos-mail:/var/mail/vhosts
 
-      # Para evitar problemas de permisos con Maildir, usar usuario root dentro del contenedor
-      # (Postfix/Dovecot ya bajan privilegios internamente)
-      user: "0:0"
-
-  # Volúmenes (si quieres usar named volumes en lugar de bind mounts)
-  #volumes:
-  #  maildata:
-  #    driver: local
-#----------------SERVIDOR DNS----------------
+    environment:
+      TZ: Europe/Madrid
 
 
-    dns:
-      build:
-        context: ./DNS
-        dockerfile: dockerfile
-      image: bind-custom
-      container_name: dns-dorayaki
-      restart: unless-stopped
-      network_mode: "host" #Usa la red del host para evitar problemas con puertos
-  
-      # # No host port binding to avoid conflict on port 53
-      # ports:
-      #    - "53:53/tcp"
-      #    - "53:53/udp"
-  
-      volumes:
-        - ./DNS/zones:/etc/bind/zones
-  
-      #networks:
-        #dmz_net:
-        #  ipv4_address: 10.1.0.1
+  # ---------------- SERVIDOR DNS ----------------
+  bind:
+    image: internetsystemsconsortium/bind9:9.20
+    container_name: bind_dns
+    restart: always
 
-# networks:
-#     dmz_net:
-#       driver: bridge
-#       ipam:
-#         config:
-#           - subnet: 10.1.0.0/24
-#             gateway: 10.1.0.254
+    # BIND debe escuchar directamente en la interfaz del host
+    network_mode: host
 
+    volumes:
+      - ./dns/bind:/etc/bind      # Configuración y zonas
+      - bind_cache:/var/cache/bind
+
+volumes:
+  bind_cache:
