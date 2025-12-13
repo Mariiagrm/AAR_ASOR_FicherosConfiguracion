@@ -1,0 +1,5 @@
+ssh host1lan@192.168.57.3
+ssh manager@192.168.57.4
+scp -r . host1lan@192.168.57.3:/home/host1lan/Escritorio
+scp -r . manager@192.168.57.4:/home/manager/Escritorio
+
