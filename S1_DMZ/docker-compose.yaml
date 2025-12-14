@@ -18,7 +18,7 @@ services:
 
     volumes:
       # Certificados TLS
-      #- ./Correo/certificados:/certs:ro
+      - ./Correo/certificados:/certs:ro
       # Persistencia del correo (Maildir)
       - ./Correo/datos-mail:/var/mail/vhosts
       # Logs
