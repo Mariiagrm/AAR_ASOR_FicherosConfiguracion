@@ -1,33 +1,33 @@
 services:
   # ---------------- SERVIDOR CORREO ----------------
-  mail:
-    image: docker.io/mailserver/docker-mailserver:latest
-    container_name: dorayaki-mail
-    hostname: mail
-    domainname: dorayaki.org
-    restart: unless-stopped
+  # mail:
+  #   image: docker.io/mailserver/docker-mailserver:latest
+  #   container_name: dorayaki-mail
+  #   hostname: mail
+  #   domainname: dorayaki.org
+  #   restart: unless-stopped
 
-    # Puertos expuestos desde el contenedor hacia el host
-    ports:
-      - "25:25"     # SMTP
-      - "587:587"   # Submission (SMTP autenticado con STARTTLS)
-      - "143:143"   # IMAP
-      - "993:993"   # IMAPS
-      - "110:110"   # POP3
-      - "995:995"   # POP3S
+  #   # Puertos expuestos desde el contenedor hacia el host
+  #   ports:
+  #     - "25:25"     # SMTP
+  #     - "587:587"   # Submission (SMTP autenticado con STARTTLS)
+  #     - "143:143"   # IMAP
+  #     - "993:993"   # IMAPS
+  #     - "110:110"   # POP3
+  #     - "995:995"   # POP3S
     
-    environment:
-      - SSL_TYPE=none          # Desactiva TLS
-      - ENABLE_SPAMASSASSIN=0  # Opcional: desactiva antispam
-      - ENABLE_CLAMAV=0        # Opcional: desactiva antivirus
-      - ENABLE_POSTGREY=0      # Opcional: desactiva greylisting
-      - ONE_DIR=1              # Simplifica estructura de mail
-      - DMS_DEBUG=0            # Desactiva modo debug
+  #   environment:
+  #     - SSL_TYPE=none          # Desactiva TLS
+  #     - ENABLE_SPAMASSASSIN=0  # Opcional: desactiva antispam
+  #     - ENABLE_CLAMAV=0        # Opcional: desactiva antivirus
+  #     - ENABLE_POSTGREY=0      # Opcional: desactiva greylisting
+  #     - ONE_DIR=1              # Simplifica estructura de mail
+  #     - DMS_DEBUG=0            # Desactiva modo debug
     
-    volumes:
-      - ./correo/maildata:/var/mail
-      - ./correo/mailstate:/var/mail-state
-      - ./correo/config:/tmp/docker-mailserver
+  #   volumes:
+  #     - ./correo/maildata:/var/mail
+  #     - ./correo/mailstate:/var/mail-state
+  #     - ./correo/config:/tmp/docker-mailserver
 
 
   # ---------------- SERVIDOR DNS ----------------
