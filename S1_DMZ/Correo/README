@@ -1,0 +1,4 @@
+Pasos para ejecutar el correo:
+1- levantar los contenedores
+2- hacer ./correo/setup email add user@dorayaki.org passwd
+3- configurar thunderbird para usar los puertos IMAP:143 y SMTP:587 sin seguridad

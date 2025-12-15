@@ -1,33 +1,31 @@
 services:
   # ---------------- SERVIDOR CORREO ----------------
-  # mail:
-  #   image: docker.io/mailserver/docker-mailserver:latest
-  #   container_name: dorayaki-mail
-  #   hostname: mail
-  #   domainname: dorayaki.org
-  #   restart: unless-stopped
-
-  #   # Puertos expuestos desde el contenedor hacia el host
-  #   ports:
-  #     - "25:25"     # SMTP
-  #     - "587:587"   # Submission (SMTP autenticado con STARTTLS)
-  #     - "143:143"   # IMAP
-  #     - "993:993"   # IMAPS
-  #     - "110:110"   # POP3
-  #     - "995:995"   # POP3S
-    
-  #   environment:
-  #     - SSL_TYPE=none          # Desactiva TLS
-  #     - ENABLE_SPAMASSASSIN=0  # Opcional: desactiva antispam
-  #     - ENABLE_CLAMAV=0        # Opcional: desactiva antivirus
-  #     - ENABLE_POSTGREY=0      # Opcional: desactiva greylisting
-  #     - ONE_DIR=1              # Simplifica estructura de mail
-  #     - DMS_DEBUG=0            # Desactiva modo debug
-    
-  #   volumes:
-  #     - ./correo/maildata:/var/mail
-  #     - ./correo/mailstate:/var/mail-state
-  #     - ./correo/config:/tmp/docker-mailserver
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mailserver
+    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+    hostname: mail.dorayaki.org
+    env_file: ./correo/mailserver.env
+    # More information about the mail-server ports:
+    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
+    ports:
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+    volumes:
+      - ./correo/docker-data/dms/mail-data/:/var/mail/
+      - ./correo/docker-data/dms/mail-state/:/var/mail-state/
+      - ./correo/docker-data/dms/mail-logs/:/var/log/mail/
+      - ./correo/docker-data/dms/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    stop_grace_period: 1m
+    # Uncomment if using `ENABLE_FAIL2BAN=1`:
+    # cap_add:
+    #   - NET_ADMIN
+    healthcheck:
+      test: "ss --listening --ipv4 --tcp | grep --silent ':smtp' || exit 1"
+      timeout: 3s
+      retries: 0
 
 
   # ---------------- SERVIDOR DNS ----------------
