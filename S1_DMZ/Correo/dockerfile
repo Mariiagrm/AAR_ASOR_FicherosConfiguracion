@@ -2,7 +2,6 @@ FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 1. Instalar paquetes PRIMERO (para crear las estructuras de carpetas base)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       postfix \
@@ -17,27 +16,20 @@ RUN apt-get update && \
       vim-tiny && \
     rm -rf /var/lib/apt/lists/*
 
-# 2. Configurar Directorios y Logs de Supervisor
-RUN mkdir -p /var/log/supervisor && \
-    touch /var/log/supervisor/supervisord.log
-
-# 3. Copiar configuración de Supervisor
-# SOLUCIÓN CRÍTICA: Sobrescribimos el archivo maestro, NO lo metemos en conf.d
-COPY configuracion/supervisord.conf /etc/supervisor/supervisord.conf
-
-# 4. Usuario/grupo para buzones virtuales
+# Usuario/grupo para buzones virtuales
 RUN groupadd -g 5000 vmail && \
     useradd -g vmail -u 5000 -d /var/mail/vhosts vmail && \
     mkdir -p /var/mail/vhosts/dorayaki.org && \
     chown -R vmail:vmail /var/mail/vhosts
 
-# 5. Fichero de contraseñas Dovecot
+# Fichero de contraseñas Dovecot (varios usuarios)
+
 RUN mkdir -p /etc/dovecot && \
     touch /etc/dovecot/passwd && \
     chown root:dovecot /etc/dovecot/passwd && \
     chmod 640 /etc/dovecot/passwd
 
-# 6. Copiar resto de configuraciones
+# Copiar configuracionuraciones
 COPY configuracion/postfix/virtual_mailbox_maps /etc/postfix/virtual_mailbox_maps
 COPY configuracion/postfix/main.cf /etc/postfix/main.cf
 COPY configuracion/postfix/master.cf /etc/postfix/master.cf
@@ -47,12 +39,16 @@ COPY configuracion/dovecot/10-auth.conf /etc/dovecot/conf.d/10-auth.conf
 COPY configuracion/dovecot/10-master.conf /etc/dovecot/conf.d/10-master.conf
 COPY configuracion/dovecot/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf
 COPY configuracion/dovecot/auth-passwdfile.conf.ext /etc/dovecot/conf.d/auth-passwdfile.conf.ext
+COPY configuracion/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Logs generales
-RUN touch /var/log/mail.log /var/log/dovecot.log
+# Logs
+RUN mkdir -p /var/log/supervisor && \
+    touch /var/log/mail.log /var/log/dovecot.log
 
 # Puertos
-EXPOSE 25 587 110 143
+EXPOSE 25 587 110 143 993 995
 
-# CMD Explícito apuntando al archivo que acabamos de copiar
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Volumen para certificados
+VOLUME ["/certs"]
+
+CMD ["/usr/bin/supervisord", "-n"]

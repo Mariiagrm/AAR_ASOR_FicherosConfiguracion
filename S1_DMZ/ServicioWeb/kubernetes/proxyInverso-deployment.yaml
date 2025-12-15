@@ -6,6 +6,7 @@ metadata:
   labels:
     app: dorayakiweb
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: dorayakiweb-proxy
@@ -20,4 +21,6 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-
+              hostPort: 80
+            - containerPort: 443
+              hostPort: 443

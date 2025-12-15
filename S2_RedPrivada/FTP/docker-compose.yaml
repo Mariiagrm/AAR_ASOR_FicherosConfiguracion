@@ -10,5 +10,5 @@ services:
             - /home/alumno/servicios/FTP/FTP-HOME:/home/alumno
         environment:
             - FTP_LIST=alumno:alumno
-            - PASSIVE_MIN_PORT=50000 
-            - PASSIVE_MAX_PORT=50010 
+            - PASSIVE_MIN_PORT=50000
+            - PASSIVE_MAX_PORT=50010

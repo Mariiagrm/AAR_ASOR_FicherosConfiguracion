@@ -15,10 +15,10 @@ smtpd_banner = $myhostname ESMTP
 # TLS
 smtpd_tls_cert_file = /certs/fullchain.pem
 smtpd_tls_key_file = /certs/privkey.pem
-smtpd_use_tls = yes
-smtpd_tls_auth_only = yes
-smtpd_tls_security_level = may
-smtp_tls_security_level = may
+smtpd_use_tls = no
+smtpd_tls_auth_only = no
+smtpd_tls_security_level = none
+smtp_tls_security_level = none
 
 # SASL via Dovecot
 smtpd_sasl_type = dovecot

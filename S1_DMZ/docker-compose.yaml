@@ -5,24 +5,22 @@ services:
       context: ./Correo
       dockerfile: dockerfile
     container_name: dorayaki-mail
-    restart: always
+    restart: unless-stopped
 
     # Puertos expuestos desde el contenedor hacia el host
     ports:
       - "25:25"     # SMTP
       - "587:587"   # Submission (SMTP autenticado con STARTTLS)
       - "143:143"   # IMAP
-      #- "993:993"   # IMAPS
+      - "993:993"   # IMAPS
       - "110:110"   # POP3
-      #- "995:995"   # POP3S
+      - "995:995"   # POP3S
 
     volumes:
       # Certificados TLS
       - ./Correo/certificados:/certs:ro
       # Persistencia del correo (Maildir)
       - ./Correo/datos-mail:/var/mail/vhosts
-      # Logs
-      #- ./Correo/logs:/var/log/
 
     environment:
       TZ: Europe/Madrid
@@ -34,7 +32,6 @@ services:
     container_name: bind_dns
     restart: always
 
-    # BIND debe escuchar directamente en la interfaz del host
     network_mode: host
 
     volumes:

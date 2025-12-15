@@ -8,7 +8,8 @@ spec:
   selector:
     app: dorayakiweb
   ports:
-    - name: http
+    - protocol: TCP
+      name: http
       port: 80
       targetPort: 80
     # - name: https 
